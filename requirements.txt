@@ -1,0 +1,11 @@
+# My Library
+carlogtt-python-library
+
+# Runtime dependencies
+python-dotenv
+
+# Development dependencies
+black
+isort
+mypy
+flake8
