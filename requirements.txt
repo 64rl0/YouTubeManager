@@ -3,8 +3,11 @@ carlogtt-python-library
 
 # Runtime dependencies
 python-dotenv
+google-api-python-client
+oauth2client
 
 # Development dependencies
+types-httplib2
 black
 isort
 mypy

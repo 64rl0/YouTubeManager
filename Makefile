@@ -9,3 +9,8 @@ build:
 .PHONY: deploy
 deploy:
 	./scripts/deploy.sh
+
+.PHONY: run
+run:
+	./scripts/run.sh
+

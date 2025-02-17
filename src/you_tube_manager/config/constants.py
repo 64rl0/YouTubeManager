@@ -9,8 +9,8 @@
 #  (      _ \     /  |     (   | (_ |    |      |
 # \___| _/  _\ _|_\ ____| \___/ \___|   _|     _|
 
-# src/you_tube_manager/main.py
-# Created 1/25/24 - 10:07 PM UK Time (London) by carlogtt
+# src/you_tube_manager/config/constants.py
+# Created 2/17/25 - 8:16 PM UK Time (London) by carlogtt
 # Copyright (c) Amazon.com Inc. All Rights Reserved.
 # AMAZON.COM CONFIDENTIAL
 
@@ -31,15 +31,15 @@ This module ...
 # Importing required libraries and modules for the application.
 # ======================================================================
 
-# Local Folder (Relative) Imports
-from . import application
+# Standard Library Imports
+import os
 
 # END IMPORTS
 # ======================================================================
 
 
 # List of public names in the module
-__all__ = ['main']
+# __all__ = []
 
 # Setting up logger for current module
 # module_logger =
@@ -47,26 +47,4 @@ __all__ = ['main']
 # Type aliases
 #
 
-
-def main() -> None:
-
-    args = application.parse_args()
-
-    try:
-        youtube = application.YouTubeManager()
-        youtube.authenticate(args)
-        response = youtube.upload_video(
-            file=args.file,
-            title=args.title,
-            description=args.description,
-            category=args.category,
-            tags=args.tags,
-            privacy_status=args.privacy_status,
-        )
-        youtube.add_video_to_playlist(
-            video_id=response['id'],
-            playlist_id=args.playlist_id,
-        )
-
-    except Exception as ex:
-        print(repr(ex))
+PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))

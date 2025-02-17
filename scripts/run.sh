@@ -4,8 +4,8 @@
 #  (      _ \     /  |     (   | (_ |    |      |
 # \___| _/  _\ _|_\ ____| \___/ \___|   _|     _|
 
-# ProjectNameHere/scripts/deploy.sh
-# Created 1/29/25 - 4:55 PM UK Time (London) by carlogtt
+# scripts/run.sh
+# Created 2/17/25 - 8:10 AM UK Time (London) by carlogtt
 # Copyright (c) Amazon.com Inc. All Rights Reserved.
 # AMAZON.COM CONFIDENTIAL
 
@@ -80,7 +80,30 @@ project_root_dir_abs="$(realpath -- "${script_dir_abs}/..")"
 declare -r project_root_dir_abs
 
 # User defined variables
+main="${project_root_dir_abs}/entrypoint.py"
+videos="${script_dir_abs}/videos"
+category="27"
+playlist_id="PLMYoPW_jBFB73NMBkiOgp9peJ9O962US_"
 
-# Format code
-make format
-echo -e "\n${green_check_mark} ${bold_green}Code formatted${end}\n"
+. "${project_root_dir_abs}/build_venv/bin/activate"
+
+while IFS= read -r line; do
+    filepath="${line}"
+    filename=$(echo "${line}" | cut -d '/' -f 6 | sed 's/.mp4//g' | sed 's/- //g' | sed 's/ / - /')
+
+    if [[ ! "${filename}" =~ ^P[0-9]-.+ ]]; then
+        continue
+    fi
+
+    echo -e "\n\n"
+    echo "Processing"
+    echo "  $filepath"
+    echo "  $filename"
+
+    python3 "${main}" --file="${filepath}" --title="${filename}" --category="${category}" --playlist_id "${playlist_id}"
+
+    sleep 15
+
+done <"${videos}"
+
+deactivate
