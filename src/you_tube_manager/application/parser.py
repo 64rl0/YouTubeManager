@@ -52,48 +52,59 @@ __all__ = ['parse_args']
 
 
 def parse_args() -> argparse.Namespace:
-    oauth2client.tools.argparser.add_argument(
+    """
+    Parse command line arguments.
+
+    :return:
+    """
+
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        parents=[oauth2client.tools.argparser])
+
+    parser.add_argument(
         "--file",
         required=True,
         help="Video file to upload",
     )
-    oauth2client.tools.argparser.add_argument(
+    parser.add_argument(
         "--title",
         required=False,
         help="Video title",
         default="Title",
     )
-    oauth2client.tools.argparser.add_argument(
+    parser.add_argument(
         "--description",
         required=False,
         help="Video description",
         default="Description",
     )
-    oauth2client.tools.argparser.add_argument(
+    parser.add_argument(
         "--category",
         required=True,
         help="Numeric video category. See https://gist.github.com/dgp/1b24bf2961521bd75d6c",
     )
-    oauth2client.tools.argparser.add_argument(
+    parser.add_argument(
         "--tags",
         required=False,
         help="Video tags, comma separated",
         default=None,
     )
-    oauth2client.tools.argparser.add_argument(
+    parser.add_argument(
         "--privacy_status",
         required=False,
         help="Video privacy status.",
         choices=("public", "private", "unlisted"),
         default="private",
     )
-    oauth2client.tools.argparser.add_argument(
+    parser.add_argument(
         "--playlist_id",
         required=False,
         help="Playlist to add the video to",
         default="",
     )
 
-    args = oauth2client.tools.argparser.parse_args()
+    args = parser.parse_args()
 
     return args

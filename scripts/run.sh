@@ -102,7 +102,7 @@ while IFS= read -r line; do
 
     python3 "${main}" --file="${filepath}" --title="${filename}" --category="${category}" --playlist_id "${playlist_id}"
 
-    sleep 15
+    sleep 5
 
 done <"${videos}"
 
