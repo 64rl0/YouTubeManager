@@ -61,7 +61,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        parents=[oauth2client.tools.argparser])
+        parents=[oauth2client.tools.argparser],
+    )
 
     parser.add_argument(
         "--file",

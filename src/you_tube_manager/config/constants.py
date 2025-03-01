@@ -48,3 +48,4 @@ import os
 #
 
 PROJECT_ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+STATIC_FOLDER = os.path.join(PROJECT_ROOT_DIR, "static")

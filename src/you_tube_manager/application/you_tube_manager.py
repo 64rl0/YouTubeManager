@@ -9,7 +9,7 @@
 #  (      _ \     /  |     (   | (_ |    |      |
 # \___| _/  _\ _|_\ ____| \___/ \___|   _|     _|
 
-# src/you_tube_manager/application/core.py
+# src/you_tube_manager/application/you_tube_manager.py
 # Created 2/17/25 - 7:57 AM UK Time (London) by carlogtt
 # Copyright (c) Amazon.com Inc. All Rights Reserved.
 # AMAZON.COM CONFIDENTIAL
@@ -32,9 +32,12 @@ This module ...
 # ======================================================================
 
 # Standard Library Imports
+import functools
 import http.client
 import os
 import time
+from collections.abc import Callable
+from typing import Any
 
 # Third Party Library Imports
 import apiclient  # type: ignore
@@ -128,8 +131,20 @@ class YouTubeManager:
         http.client.BadStatusLine,
     )
 
+    @staticmethod
+    def _validate_service_auth(original_func: Callable[..., Any]):
+
+        @functools.wraps(original_func)
+        def inner(self, *args, **kwargs):
+            if not self.youtube:
+                raise ConnectionError("YouTube service not authenticated")
+
+            return original_func(self, *args, **kwargs)
+
+        return inner
+
     def __init__(self):
-        self.youtube = None
+        self.youtube: Any = None
 
     def authenticate(self, args):
         flow = oauth2client.client.flow_from_clientsecrets(
@@ -150,6 +165,7 @@ class YouTubeManager:
             http=credentials.authorize(httplib2.Http()),
         )
 
+    @_validate_service_auth
     def upload_video(
         self, file: str, title: str, description: str, category: str, privacy_status: str, tags: str
     ):
@@ -163,9 +179,6 @@ class YouTubeManager:
         :param tags:
         :return:
         """
-
-        if not self.youtube:
-            raise ConnectionError("YouTube service not authenticated")
 
         if not os.path.exists(file):
             raise FileNotFoundError(f"File '{file}' not found")
@@ -213,15 +226,13 @@ class YouTubeManager:
 
         return response
 
+    @_validate_service_auth
     def add_video_to_playlist(self, video_id, playlist_id):
         """
 
         :param video_id:
         :param playlist_id:
         """
-
-        if not self.youtube:
-            raise ConnectionError("YouTube service not authenticated")
 
         add_request = self.youtube.playlistItems().insert(
             part="snippet",
@@ -236,8 +247,55 @@ class YouTubeManager:
             },
         )
 
-        response = add_request.execute()  # noqa
+        response = add_request.execute()
         print(f"  Video was successfully added to playlist '{playlist_id}'")
+
+        return response
+
+    @_validate_service_auth
+    def get_channel_videos(self, channel_id: str):
+        playlist_id = self._get_channel_uploads_playlist_id(channel_id)
+
+        response = self.get_playlist_videos(playlist_id)
+
+        return response
+
+    @_validate_service_auth
+    def get_playlist_videos(self, playlist_id: str):
+        items = []
+        next_page_token = True
+        param = {
+            "part": "id,snippet,contentDetails",
+            "playlistId": playlist_id,
+            "maxResults": 50,
+        }
+
+        while next_page_token:
+            if next_page_token and next_page_token is not True:
+                param["pageToken"] = next_page_token
+
+            response = self.youtube.playlistItems().list(**param).execute()
+
+            items.extend(response['items'])
+            next_page_token = response.get('nextPageToken', False)
+
+        response = {'items': items, 'pageInfo': response['pageInfo']}
+
+        return response
+
+    @_validate_service_auth
+    def _get_channel_uploads_playlist_id(self, channel_id: str):
+
+        response = (
+            self.youtube.channels()
+            .list(
+                part="contentDetails",
+                id=channel_id,
+            )
+            .execute()
+        )
+
+        return response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
 
     def _resumable_upload(self, insert_request):
         """

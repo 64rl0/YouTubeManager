@@ -291,5 +291,11 @@ cython_debug/
 ### Carlo Personal Exclusions
 build_undefined/
 build_venv/
+
 /scripts/videos
-/oauth2/
+
+/oauth2/**/*
+!/oauth2/README.md
+
+/static/**/*
+!/static/README.md

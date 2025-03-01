@@ -83,16 +83,19 @@ declare -r project_root_dir_abs
 main="${project_root_dir_abs}/entrypoint.py"
 videos="${script_dir_abs}/videos"
 category="27"
-playlist_id="PLMYoPW_jBFB73NMBkiOgp9peJ9O962US_"
+playlist_id="PLMYoPW_jBFB4dzBQaW93_-LrocYj_wDJ-"
 
 . "${project_root_dir_abs}/build_venv/bin/activate"
 
 while IFS= read -r line; do
     filepath="${line}"
-    filename=$(echo "${line}" | cut -d '/' -f 6 | sed 's/.mp4//g' | sed 's/- //g' | sed 's/ / - /')
+    filename=$(echo "${line}" | cut -d '/' -f 8)
 
-    if [[ ! "${filename}" =~ ^P[0-9]-.+ ]]; then
-        continue
+    if [[ ! "${filename}" =~ ^[0-9][0-9]-.+ ]]; then
+        echo -e "[ERROR]"
+        echo "  $filepath"
+        echo "  $filename"
+        exit 1
     fi
 
     echo -e "\n\n"
@@ -102,7 +105,7 @@ while IFS= read -r line; do
 
     python3 "${main}" --file="${filepath}" --title="${filename}" --category="${category}" --playlist_id "${playlist_id}"
 
-    sleep 5
+    sleep 2
 
 done <"${videos}"
 
