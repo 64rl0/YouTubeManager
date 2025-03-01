@@ -296,6 +296,7 @@ build_venv/
 
 /oauth2/**/*
 !/oauth2/README.md
+!/oauth2/client_secrets_template.json
 
 /static/**/*
 !/static/README.md
