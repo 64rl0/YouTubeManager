@@ -69,6 +69,7 @@ def upload_videos(args: argparse.Namespace):
 
     except Exception as ex:
         print(repr(ex))
+        raise
 
 
 def add_video_to_playlist(args: argparse.Namespace, video_id: str, playlist_id: str):
@@ -82,6 +83,7 @@ def add_video_to_playlist(args: argparse.Namespace, video_id: str, playlist_id: 
 
     except Exception as ex:
         print(repr(ex))
+        raise
 
 
 def get_all_channel_videos(args: argparse.Namespace):
@@ -96,6 +98,7 @@ def get_all_channel_videos(args: argparse.Namespace):
 
     except Exception as ex:
         print(repr(ex))
+        raise
 
 
 def get_all_playlist_videos(args: argparse.Namespace):
@@ -110,6 +113,7 @@ def get_all_playlist_videos(args: argparse.Namespace):
 
     except Exception as ex:
         print(repr(ex))
+        raise
 
 
 def get_all_videos_list(file: str):
