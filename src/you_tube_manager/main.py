@@ -43,7 +43,9 @@ from . import application, config
 
 
 # List of public names in the module
-__all__ = ['main']
+__all__ = [
+    'main',
+]
 
 # Setting up logger for current module
 # module_logger =
@@ -129,6 +131,7 @@ def get_all_videos_list(file: str):
 
 
 def main() -> None:
+    # application.rename_files()
     args = application.parse_args()
 
     response = upload_videos(args)

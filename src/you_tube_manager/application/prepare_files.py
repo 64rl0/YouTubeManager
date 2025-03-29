@@ -40,7 +40,9 @@ import string
 
 
 # List of public names in the module
-# __all__ = []
+__all__ = [
+    'rename_files',
+]
 
 # Setting up logger for current module
 # module_logger =
@@ -52,19 +54,23 @@ import string
 ALLOWED_PATTERN = string.ascii_letters + string.digits + '&+,-;=^ '
 NOT_ALLOWED_CHAR = '^+;'
 
-ROOT_DIR = '/Users/carlogtt/Downloads/Linux_Deep_Dive/extract/Linux_Deep_Dive'
-MOVE_DIR = '/Users/carlogtt/Downloads/Linux_Deep_Dive/extract/Linux_Deep_Dive_Moved'
+FOLDER_NAME = 'AWS_CDK_TypeScript'
+ROOT_DIR = f'/Users/carlogtt/Downloads/{FOLDER_NAME}/extract/{FOLDER_NAME}'
+MOVE_DIR = f'/Users/carlogtt/Downloads/{FOLDER_NAME}/extract/{FOLDER_NAME}_Moved'
 
 
 def rename_files() -> None:
-    """ """
+    """
+    Rename files
+
+    """
 
     for root, dirs, files in os.walk(ROOT_DIR):
         for video_dir in dirs:
             for root1, dirs1, files1 in os.walk(f"{ROOT_DIR}/{video_dir}"):
                 for video_file in files1:
 
-                    if video_file[-4:] != '.mp4':
+                    if not video_file.endswith('.mp4'):
                         print(f"[SKIPPING FILE] - {ROOT_DIR}/{video_dir}/{video_file}")
                         continue
 
@@ -86,4 +92,5 @@ def rename_files() -> None:
 
                     print(src)
                     print(dst)
+                    print()
                     # os.rename(src, dst)

@@ -4,8 +4,8 @@
 #  (      _ \     /  |     (   | (_ |    |      |
 # \___| _/  _\ _|_\ ____| \___/ \___|   _|     _|
 
-# scripts/run.sh
-# Created 2/17/25 - 8:10 AM UK Time (London) by carlogtt
+# scripts/run-rename.sh
+# Created 3/29/25 - 8:02 PM UK Time (London) by carlogtt
 # Copyright (c) Amazon.com Inc. All Rights Reserved.
 # AMAZON.COM CONFIDENTIAL
 
@@ -54,6 +54,7 @@ declare -r end_dim=$'\033[22m'
 declare -r end_italic_underline=$'\033[23m'
 declare -r end_invert=$'\033[27m'
 declare -r end_hidden=$'\033[28m'
+declare -r clear_line=$'\033[2K'
 
 # Emoji
 declare -r green_check_mark="\xE2\x9C\x85"
@@ -70,8 +71,8 @@ declare -r package="\xF0\x9F\x93\xA6"
 declare -r network_world="\xF0\x9F\x8C\x90"
 
 # Script Options
-set -o errexit  # Exit immediately if a command exits with a non-zero status
-set -o pipefail # Exit status of a pipeline is the status of the last cmd to exit with non-zero
+set -o errexit   # Exit immediately if a command exits with a non-zero status
+set -o pipefail  # Exit status of a pipeline is the status of the last cmd to exit with non-zero
 
 # Script Paths
 script_dir_abs="$(realpath -- "$(dirname -- "${BASH_SOURCE[0]}")")"
@@ -81,32 +82,9 @@ declare -r project_root_dir_abs
 
 # User defined variables
 main="${project_root_dir_abs}/entrypoint.py"
-videos="${script_dir_abs}/videos"
-category="27"
-playlist_id="PLMYoPW_jBFB7NjqGj2mVIe9I1Qhv9sc8f"
 
 . "${project_root_dir_abs}/build_venv/bin/activate"
 
-while IFS= read -r line; do
-    filepath="${line}"
-    filename=$(echo "${line}" | cut -d '/' -f 8)
-
-    if [[ ! "${filename}" =~ ^[0-9][0-9]-.+ ]]; then
-        echo -e "[ERROR]"
-        echo "  $filepath"
-        echo "  $filename"
-        exit 1
-    fi
-
-    echo -e "\n\n"
-    echo "Processing"
-    echo "  $filepath"
-    echo "  $filename"
-
-    python3 "${main}" --file="${filepath}" --title="${filename}" --category="${category}" --playlist_id "${playlist_id}"
-
-    sleep 2
-
-done <"${videos}"
+python3 "${main}"
 
 deactivate
